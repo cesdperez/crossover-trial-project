@@ -1,39 +1,19 @@
 package com.crossover.trial.weather.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.crossover.trial.weather.model.DataPointType.*;
+import static com.crossover.trial.weather.util.WeatherValidator.checkDataPoint;
+
 /**
  * encapsulates sensor information for a particular location
  */
 public class AtmosphericInformation {
 
-    /**
-     * temperature in degrees celsius
-     */
-    private DataPoint temperature;
-
-    /**
-     * wind speed in km/h
-     */
-    private DataPoint wind;
-
-    /**
-     * humidity in percent
-     */
-    private DataPoint humidity;
-
-    /**
-     * precipitation in cm
-     */
-    private DataPoint precipitation;
-
-    /**
-     * pressure in mmHg
-     */
-    private DataPoint pressure;
-
-    /**
-     * cloud cover percent from 0 - 100 (integer)
-     */
-    private DataPoint cloudCover;
+    final Map<DataPointType, DataPoint> data = new ConcurrentHashMap<>();
 
     /**
      * the last time this data was updated, in milliseconds since UTC epoch
@@ -41,72 +21,51 @@ public class AtmosphericInformation {
     private long lastUpdateTime;
 
     public AtmosphericInformation() {
-
+        lastUpdateTime = System.currentTimeMillis();
     }
 
-    protected AtmosphericInformation(DataPoint temperature, DataPoint wind, DataPoint humidity, DataPoint percipitation, DataPoint pressure, DataPoint cloudCover) {
-        this.temperature = temperature;
-        this.wind = wind;
-        this.humidity = humidity;
-        this.precipitation = percipitation;
-        this.pressure = pressure;
-        this.cloudCover = cloudCover;
-        this.lastUpdateTime = System.currentTimeMillis();
+    public DataPoint update(DataPointType key, DataPoint value) throws IllegalArgumentException {
+        checkDataPoint(key, value);
+        lastUpdateTime = System.currentTimeMillis();
+        return data.put(key, value);
+    }
+
+    public DataPoint get(DataPointType key) {
+        return data.get(key);
     }
 
     public DataPoint getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(DataPoint temperature) {
-        this.temperature = temperature;
+        return get(TEMPERATURE);
     }
 
     public DataPoint getWind() {
-        return wind;
-    }
-
-    public void setWind(DataPoint wind) {
-        this.wind = wind;
+        return get(WIND);
     }
 
     public DataPoint getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(DataPoint humidity) {
-        this.humidity = humidity;
+        return get(HUMIDITY);
     }
 
     public DataPoint getPrecipitation() {
-        return precipitation;
-    }
-
-    public void setPrecipitation(DataPoint precipitation) {
-        this.precipitation = precipitation;
+        return get(PRECIPITATION);
     }
 
     public DataPoint getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(DataPoint pressure) {
-        this.pressure = pressure;
+        return get(PRESSURE);
     }
 
     public DataPoint getCloudCover() {
-        return cloudCover;
-    }
-
-    public void setCloudCover(DataPoint cloudCover) {
-        this.cloudCover = cloudCover;
+        return get(CLOUDCOVER);
     }
 
     public long getLastUpdateTime() {
         return this.lastUpdateTime;
     }
 
-    public void setLastUpdateTime(long lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+    @JsonIgnore
+    public boolean isEmpty() {
+        return data.isEmpty();
     }
+
 }
+

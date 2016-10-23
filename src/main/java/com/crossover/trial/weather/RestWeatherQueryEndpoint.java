@@ -74,12 +74,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
         int datasize = 0;
         for (AtmosphericInformation ai : atmosphericInformation) {
             // we only count recent readings
-            if (ai.getCloudCover() != null
-                    || ai.getHumidity() != null
-                    || ai.getPressure() != null
-                    || ai.getPrecipitation() != null
-                    || ai.getTemperature() != null
-                    || ai.getWind() != null) {
+            if (!ai.isEmpty()) {
                 // updated in the last day
                 if (ai.getLastUpdateTime() > System.currentTimeMillis() - 86400000) {
                     datasize++;
@@ -134,8 +129,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
             for (int i = 0; i < airportData.size(); i++) {
                 if (calculateDistance(ad, airportData.get(i)) <= radius) {
                     AtmosphericInformation ai = atmosphericInformation.get(i);
-                    if (ai.getCloudCover() != null || ai.getHumidity() != null || ai.getPrecipitation() != null
-                            || ai.getPressure() != null || ai.getTemperature() != null || ai.getWind() != null) {
+                    if (!ai.isEmpty()) {
                         retval.add(ai);
                     }
                 }

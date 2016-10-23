@@ -15,9 +15,9 @@ public class DataPoint {
 
     private int first = 0;
 
-    private int median = 0;
+    private int second = 0;
 
-    private int last = 0;
+    private int third = 0;
 
     private int count = 0;
 
@@ -28,10 +28,10 @@ public class DataPoint {
     }
 
     private DataPoint(Builder builder) {
-        this.setFirst(builder.first);
         this.setMean(builder.mean);
-        this.setMedian(builder.median);
-        this.setLast(builder.last);
+        this.setFirst(builder.first);
+        this.setSecond(builder.second);
+        this.setThird(builder.third);
         this.setCount(builder.count);
     }
 
@@ -58,25 +58,25 @@ public class DataPoint {
     }
 
     /**
-     * 2nd quartile -- median value
+     * 2nd quartile -- second value
      */
-    public int getMedian() {
-        return median;
+    public int getSecond() {
+        return second;
     }
 
-    public void setMedian(int median) {
-        this.median = median;
+    public void setSecond(int second) {
+        this.second = second;
     }
 
     /**
      * 3rd quartile value -- less noisy upper value
      */
-    public int getLast() {
-        return last;
+    public int getThird() {
+        return third;
     }
 
-    public void setLast(int last) {
-        this.last = last;
+    public void setThird(int third) {
+        this.third = third;
     }
 
     /**
@@ -95,8 +95,8 @@ public class DataPoint {
         return new ToStringBuilder(this)
                 .append("mean", mean)
                 .append("first", first)
-                .append("median", median)
-                .append("last", last)
+                .append("second", second)
+                .append("third", third)
                 .append("count", count)
                 .toString();
     }
@@ -108,21 +108,21 @@ public class DataPoint {
         DataPoint dataPoint = (DataPoint) o;
         return Double.compare(dataPoint.mean, mean) == 0 &&
                 first == dataPoint.first &&
-                median == dataPoint.median &&
-                last == dataPoint.last &&
+                second == dataPoint.second &&
+                third == dataPoint.third &&
                 count == dataPoint.count;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mean, first, median, last, count);
+        return Objects.hash(mean, first, second, third, count);
     }
 
     static public class Builder {
         private int first;
         private int mean;
-        private int median;
-        private int last;
+        private int second;
+        private int third;
         private int count;
 
         public Builder() {
@@ -138,8 +138,8 @@ public class DataPoint {
             return this;
         }
 
-        public Builder withMedian(int median) {
-            this.median = median;
+        public Builder withSecond(int median) {
+            this.second = median;
             return this;
         }
 
@@ -148,8 +148,8 @@ public class DataPoint {
             return this;
         }
 
-        public Builder withLast(int last) {
-            this.last = last;
+        public Builder withThird(int last) {
+            this.third = last;
             return this;
         }
 
