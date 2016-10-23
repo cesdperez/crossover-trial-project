@@ -1,5 +1,8 @@
 package com.crossover.trial.weather;
 
+import com.crossover.trial.weather.model.AirportData;
+import com.crossover.trial.weather.model.DataPointType;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

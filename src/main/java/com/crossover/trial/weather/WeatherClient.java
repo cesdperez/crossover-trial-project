@@ -1,5 +1,7 @@
 package com.crossover.trial.weather;
 
+import com.crossover.trial.weather.model.DataPoint;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;

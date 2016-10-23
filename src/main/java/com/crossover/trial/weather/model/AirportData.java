@@ -1,4 +1,4 @@
-package com.crossover.trial.weather;
+package com.crossover.trial.weather.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -14,17 +14,17 @@ public class AirportData {
     /**
      * the three letter IATA code
      */
-    String iata;
+    private String iata;
 
     /**
      * latitude value in degrees
      */
-    double latitude;
+    private double latitude;
 
     /**
      * longitude value in degrees
      */
-    double longitude;
+    private double longitude;
 
     public AirportData() {
     }

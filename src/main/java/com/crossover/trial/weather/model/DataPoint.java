@@ -1,4 +1,4 @@
-package com.crossover.trial.weather;
+package com.crossover.trial.weather.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -11,15 +11,15 @@ import java.util.Objects;
  */
 public class DataPoint {
 
-    public double mean = 0.0;
+    private double mean = 0.0;
 
-    public int first = 0;
+    private int first = 0;
 
-    public int median = 0;
+    private int median = 0;
 
-    public int last = 0;
+    private int last = 0;
 
-    public int count = 0;
+    private int count = 0;
 
     /**
      * private constructor, use the builder to create this object
@@ -27,7 +27,7 @@ public class DataPoint {
     private DataPoint() {
     }
 
-    protected DataPoint(Builder builder) {
+    private DataPoint(Builder builder) {
         this.setFirst(builder.first);
         this.setMean(builder.mean);
         this.setMedian(builder.median);
@@ -42,7 +42,7 @@ public class DataPoint {
         return mean;
     }
 
-    protected void setMean(double mean) {
+    public void setMean(double mean) {
         this.mean = mean;
     }
 
@@ -53,7 +53,7 @@ public class DataPoint {
         return first;
     }
 
-    protected void setFirst(int first) {
+    public void setFirst(int first) {
         this.first = first;
     }
 
@@ -64,7 +64,7 @@ public class DataPoint {
         return median;
     }
 
-    protected void setMedian(int median) {
+    public void setMedian(int median) {
         this.median = median;
     }
 
@@ -75,7 +75,7 @@ public class DataPoint {
         return last;
     }
 
-    protected void setLast(int last) {
+    public void setLast(int last) {
         this.last = last;
     }
 
@@ -86,7 +86,7 @@ public class DataPoint {
         return count;
     }
 
-    protected void setCount(int count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
@@ -119,11 +119,11 @@ public class DataPoint {
     }
 
     static public class Builder {
-        int first;
-        int mean;
-        int median;
-        int last;
-        int count;
+        private int first;
+        private int mean;
+        private int median;
+        private int last;
+        private int count;
 
         public Builder() {
         }
