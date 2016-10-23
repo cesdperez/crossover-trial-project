@@ -5,25 +5,39 @@ package com.crossover.trial.weather;
  */
 class AtmosphericInformation {
 
-    /** temperature in degrees celsius */
+    /**
+     * temperature in degrees celsius
+     */
     private DataPoint temperature;
 
-    /** wind speed in km/h */
+    /**
+     * wind speed in km/h
+     */
     private DataPoint wind;
 
-    /** humidity in percent */
+    /**
+     * humidity in percent
+     */
     private DataPoint humidity;
 
-    /** precipitation in cm */
+    /**
+     * precipitation in cm
+     */
     private DataPoint precipitation;
 
-    /** pressure in mmHg */
+    /**
+     * pressure in mmHg
+     */
     private DataPoint pressure;
 
-    /** cloud cover percent from 0 - 100 (integer) */
+    /**
+     * cloud cover percent from 0 - 100 (integer)
+     */
     private DataPoint cloudCover;
 
-    /** the last time this data was updated, in milliseconds since UTC epoch */
+    /**
+     * the last time this data was updated, in milliseconds since UTC epoch
+     */
     private long lastUpdateTime;
 
     public AtmosphericInformation() {
@@ -43,42 +57,55 @@ class AtmosphericInformation {
     public DataPoint getTemperature() {
         return temperature;
     }
+
     public void setTemperature(DataPoint temperature) {
         this.temperature = temperature;
     }
+
     public DataPoint getWind() {
         return wind;
     }
+
     public void setWind(DataPoint wind) {
         this.wind = wind;
     }
+
     public DataPoint getHumidity() {
         return humidity;
     }
+
     public void setHumidity(DataPoint humidity) {
         this.humidity = humidity;
     }
+
     public DataPoint getPrecipitation() {
         return precipitation;
     }
+
     public void setPrecipitation(DataPoint precipitation) {
         this.precipitation = precipitation;
     }
+
     public DataPoint getPressure() {
         return pressure;
     }
+
     public void setPressure(DataPoint pressure) {
         this.pressure = pressure;
     }
+
     public DataPoint getCloudCover() {
         return cloudCover;
     }
+
     public void setCloudCover(DataPoint cloudCover) {
         this.cloudCover = cloudCover;
     }
+
     protected long getLastUpdateTime() {
         return this.lastUpdateTime;
     }
+
     protected void setLastUpdateTime(long lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }

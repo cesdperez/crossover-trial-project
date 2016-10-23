@@ -1,7 +1,8 @@
 package com.crossover.trial.weather;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.Objects;
 
 /**
  * Basic airport information.
@@ -10,16 +11,23 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class AirportData {
 
-    /** the three letter IATA code */
+    /**
+     * the three letter IATA code
+     */
     String iata;
 
-    /** latitude value in degrees */
+    /**
+     * latitude value in degrees
+     */
     double latitude;
 
-    /** longitude value in degrees */
+    /**
+     * longitude value in degrees
+     */
     double longitude;
 
-    public AirportData() { }
+    public AirportData() {
+    }
 
     public String getIata() {
         return iata;
@@ -45,15 +53,27 @@ public class AirportData {
         this.longitude = longitude;
     }
 
+    @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.NO_CLASS_NAME_STYLE);
+        return new ToStringBuilder(this)
+                .append("iata", iata)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .toString();
     }
 
-    public boolean equals(Object other) {
-        if (other instanceof AirportData) {
-            return ((AirportData)other).getIata().equals(this.getIata());
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AirportData that = (AirportData) o;
+        return Double.compare(that.latitude, latitude) == 0 &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                Objects.equals(iata, that.iata);
+    }
 
-        return false;
+    @Override
+    public int hashCode() {
+        return Objects.hash(iata, latitude, longitude);
     }
 }

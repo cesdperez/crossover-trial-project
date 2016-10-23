@@ -2,6 +2,7 @@ package com.crossover.trial.weather;
 
 import com.google.gson.Gson;
 
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -22,7 +23,9 @@ import static com.crossover.trial.weather.RestWeatherQueryEndpoint.*;
 public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     public final static Logger LOGGER = Logger.getLogger(RestWeatherCollectorEndpoint.class.getName());
 
-    /** shared gson json to object factory */
+    /**
+     * shared gson json to object factory
+     */
     public final static Gson gson = new Gson();
 
     @Override
@@ -30,6 +33,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.OK).entity("ready").build();
     }
 
+    @POST
+    @Path("/weather/{iata}/{pointType}")
     @Override
     public Response updateWeather(@PathParam("iata") String iataCode,
                                   @PathParam("pointType") String pointType,
@@ -86,10 +91,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     /**
      * Update the airports weather data with the collected data.
      *
-     * @param iataCode the 3 letter IATA code
+     * @param iataCode  the 3 letter IATA code
      * @param pointType the point type {@link DataPointType}
-     * @param dp a datapoint object holding pointType data
-     *
+     * @param dp        a datapoint object holding pointType data
      * @throws WeatherException if the update can not be completed
      */
     public void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException {
@@ -101,9 +105,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     /**
      * update atmospheric information with the given data point for the given point type
      *
-     * @param ai the atmospheric information object to update
+     * @param ai        the atmospheric information object to update
      * @param pointType the data point type as a string
-     * @param dp the actual data point
+     * @param dp        the actual data point
      */
     public void updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp) throws WeatherException {
         final DataPointType dptype = DataPointType.valueOf(pointType.toUpperCase());
@@ -149,7 +153,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         }
 
         if (pointType.equalsIgnoreCase(DataPointType.PRECIPITATION.name())) {
-            if (dp.getMean() >=0 && dp.getMean() < 100) {
+            if (dp.getMean() >= 0 && dp.getMean() < 100) {
                 ai.setPrecipitation(dp);
                 ai.setLastUpdateTime(System.currentTimeMillis());
                 return;
@@ -162,10 +166,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     /**
      * Add a new known airport to our list.
      *
-     * @param iataCode 3 letter code
-     * @param latitude in degrees
+     * @param iataCode  3 letter code
+     * @param latitude  in degrees
      * @param longitude in degrees
-     *
      * @return the added airport
      */
     public static AirportData addAirport(String iataCode, double latitude, double longitude) {
