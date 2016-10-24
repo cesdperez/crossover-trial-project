@@ -7,10 +7,7 @@ import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.model.DataPointType;
 import com.crossover.trial.weather.repository.InMemoryAirportWeatherRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -42,7 +39,21 @@ public class AirportWeatherService {
         return airportRepository.getAtmosphericInformationFor(airport);
     }
 
-    public Collection<AtmosphericInformation> findAtmosphericInformationInRange(String iata, double radius) throws NoSuchElementException {
+    public List<AtmosphericInformation> findAtmosphericInformationInRange(String iata, double radius) throws NoSuchElementException {
+        List<AtmosphericInformation> retval = new ArrayList<>();
+
+        if (radius == 0) {
+            AtmosphericInformation atmosphericInformation = findAtmosphericInformationFor(iata);
+            retval.add(atmosphericInformation);
+        } else {
+            Collection<AtmosphericInformation> atmosphericInformationInRange = scanForAtmosphericInformationInRange(iata, radius);
+            retval.addAll(atmosphericInformationInRange);
+        }
+
+        return retval;
+    }
+
+    private Collection<AtmosphericInformation> scanForAtmosphericInformationInRange(String iata, double radius) throws NoSuchElementException {
         return findAirportDataInRange(iata, radius).stream()
                 .map(airport -> airportRepository.getAtmosphericInformationFor(airport))
                 .filter(AtmosphericInformation::isNotEmpty)

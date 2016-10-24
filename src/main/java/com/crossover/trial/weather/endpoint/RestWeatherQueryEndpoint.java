@@ -7,7 +7,9 @@ import com.google.gson.Gson;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -57,15 +59,11 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
     public Response weather(String iata, String radiusString) {
         double radius = radiusString == null ? 0 : Double.valueOf(radiusString);
         statisticsService.updateRequestFrequency(iata, radius);
+        List<AtmosphericInformation> retval = airportWeatherService.findAtmosphericInformationInRange(iata, radius);
 
-        List<AtmosphericInformation> retval = new ArrayList<>();
-        if (radius == 0) {
-            AtmosphericInformation atmosphericInformation = airportWeatherService.findAtmosphericInformationFor(iata);
-            retval.add(atmosphericInformation);
-        } else {
-            Collection<AtmosphericInformation> atmosphericInformationInRange = airportWeatherService.findAtmosphericInformationInRange(iata, radius);
-            retval.addAll(atmosphericInformationInRange);
-        }
-        return Response.status(Response.Status.OK).entity(retval).build();
+        return Response
+                .status(Response.Status.OK)
+                .entity(retval)
+                .build();
     }
 }

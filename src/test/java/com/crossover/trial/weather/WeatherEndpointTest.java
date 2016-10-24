@@ -40,6 +40,7 @@ public class WeatherEndpointTest {
                 .withThird(30)
                 .withMean(22)
                 .build();
+
         update.updateWeather("BOS", "wind", gson.toJson(dataPoint));
         query.weather("BOS", "0").getEntity();
     }
@@ -48,8 +49,7 @@ public class WeatherEndpointTest {
     public void testPing() throws Exception {
         String ping = query.ping();
         JsonElement pingResult = new JsonParser().parse(ping);
-        assertEquals(1, pingResult.getAsJsonObject().get("datasize").getAsInt());
-        assertEquals(5, pingResult.getAsJsonObject().get("iata_freq").getAsJsonObject().entrySet().size());
+        assertPing(pingResult, 1, 5, 1);
     }
 
     @Test
@@ -67,8 +67,15 @@ public class WeatherEndpointTest {
         dataPoint.setMean(30);
         update.updateWeather("LGA", "wind", gson.toJson(dataPoint));
 
-        List<AtmosphericInformation> ais = (List<AtmosphericInformation>) query.weather("JFK", "200").getEntity();
+        List<AtmosphericInformation> ais = (List<AtmosphericInformation>) query.weather("JFK", "30").getEntity();
+        assertEquals(2, ais.size());
+
+        ais = (List<AtmosphericInformation>) query.weather("JFK", "200").getEntity();
         assertEquals(3, ais.size());
+
+
+        ais = (List<AtmosphericInformation>) query.weather("JFK", "500").getEntity();
+        assertEquals(4, ais.size());
     }
 
     @Test
@@ -87,15 +94,27 @@ public class WeatherEndpointTest {
 
         String ping = query.ping();
         JsonElement pingResult = new JsonParser().parse(ping);
-        assertEquals(1, pingResult.getAsJsonObject().get("datasize").getAsInt());
+        assertPing(pingResult, 1, 5, 2);
 
         DataPoint cloudCoverDp = new DataPoint.Builder()
-                .withCount(4).withFirst(10).withSecond(60).withThird(100).withMean(50).build();
+                .withCount(4)
+                .withFirst(10)
+                .withSecond(60)
+                .withThird(100)
+                .withMean(50)
+                .build();
+
         update.updateWeather("BOS", "cloudcover", gson.toJson(cloudCoverDp));
 
         List<AtmosphericInformation> ais = (List<AtmosphericInformation>) query.weather("BOS", "0").getEntity();
         assertEquals(ais.get(0).getWind(), windDp);
         assertEquals(ais.get(0).getCloudCover(), cloudCoverDp);
+    }
+
+    private void assertPing(JsonElement pingResult, int datasize, int iataFreq, int radiusFreq) {
+        assertEquals(datasize, pingResult.getAsJsonObject().get("datasize").getAsInt());
+        assertEquals(iataFreq, pingResult.getAsJsonObject().get("iata_freq").getAsJsonObject().entrySet().size());
+        assertEquals(radiusFreq, pingResult.getAsJsonObject().get("radius_freq").getAsJsonArray().get(0).getAsInt());
     }
 
 }
