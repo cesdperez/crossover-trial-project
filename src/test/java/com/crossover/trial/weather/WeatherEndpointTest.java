@@ -1,5 +1,9 @@
 package com.crossover.trial.weather;
 
+import com.crossover.trial.weather.endpoint.RestWeatherCollectorEndpoint;
+import com.crossover.trial.weather.endpoint.RestWeatherQueryEndpoint;
+import com.crossover.trial.weather.endpoint.WeatherCollectorEndpoint;
+import com.crossover.trial.weather.endpoint.WeatherQueryEndpoint;
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.repository.InMemoryAirportWeatherRepository;
