@@ -1,5 +1,6 @@
 package com.crossover.trial.weather.repository;
 
+import com.crossover.trial.weather.exception.AirportAlreadyExistsException;
 import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.AtmosphericInformation;
 
@@ -58,13 +59,13 @@ public class InMemoryAirportWeatherRepository {
         return airportMap.get(airport);
     }
 
-    public void addAirport(AirportData ad, AtmosphericInformation ai) throws IllegalArgumentException {
+    public void addAirport(AirportData ad, AtmosphericInformation ai) {
         AtmosphericInformation atmosphericInformation = airportMap.putIfAbsent(ad, ai);
         if (null != atmosphericInformation)
-            throw new IllegalArgumentException();
+            throw new AirportAlreadyExistsException();
     }
 
-    public void addAirport(String iataCode, double latitude, double longitude) throws IllegalArgumentException {
+    public void addAirport(String iataCode, double latitude, double longitude) {
         AirportData ad = new AirportData.Builder()
                 .withIata(iataCode)
                 .withLatitude(latitude)

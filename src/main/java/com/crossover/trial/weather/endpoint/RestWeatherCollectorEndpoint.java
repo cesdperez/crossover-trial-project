@@ -1,6 +1,8 @@
 package com.crossover.trial.weather.endpoint;
 
+import com.crossover.trial.weather.exception.AirportAlreadyExistsException;
 import com.crossover.trial.weather.exception.WeatherException;
+import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.service.AirportWeatherService;
 import com.google.gson.Gson;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.util.NoSuchElementException;
 
 import static javax.ws.rs.core.Response.Status.*;
 
@@ -62,10 +65,19 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
 
     @Override
     public Response getAirport(String iata) {
-        return Response
-                .status(OK)
-                .entity(airportWeatherService.findAirportDataFor(iata))
-                .build();
+        try {
+            AirportData airport = airportWeatherService.findAirportDataFor(iata);
+            LOG.debug("Data for airport ({}) retrieved", iata);
+            return Response
+                    .status(OK)
+                    .entity(airport)
+                    .build();
+        } catch (NoSuchElementException e) {
+            LOG.debug("Airport ({}) can't be retrieved because it doesn't exist");
+            return Response
+                    .status(NOT_FOUND)
+                    .build();
+        }
     }
 
 
@@ -73,13 +85,13 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     public Response addAirport(String iata, String latString, String longString) {
         try {
             airportWeatherService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
-            LOG.debug("Airport (%s, %s, %s) added", iata, latString, longString);
+            LOG.debug("Airport ({} {} {}) added", iata, latString, longString);
             return Response.status(CREATED).build();
-        } catch (NumberFormatException e) {
-            LOG.error("Airport (%s, %s, %s) can't be added", iata, latString, longString, e);
-            return Response.status(BAD_REQUEST).build();
         } catch (IllegalArgumentException e) {
-            LOG.debug("Airport (%s, %s, %s) wasn't added, already exists", iata, latString, longString);
+            LOG.debug("Airport ({} {} {}) can't be added", iata, latString, longString, e);
+            return Response.status(BAD_REQUEST).build();
+        } catch (AirportAlreadyExistsException e) {
+            LOG.debug("Airport ({} {} {}) wasn't added, already exists", iata, latString, longString);
             return Response.status(NOT_MODIFIED).build();
         }
     }
@@ -87,11 +99,14 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
 
     @Override
     public Response deleteAirport(String iata) {
-        LOG.debug("deleteAirport ({})", iata);
-
-        airportWeatherService.removeAirport(iata);
-
-        return Response.status(Response.Status.NO_CONTENT).build();
+        try {
+            airportWeatherService.removeAirport(iata);
+            LOG.debug("Airport ({}) deleted", iata);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (NoSuchElementException e) {
+            LOG.debug("Airport ({}) doesn't exist", iata);
+            return Response.status(Response.Status.NOT_MODIFIED).build();
+        }
     }
 
     @Override

@@ -21,6 +21,8 @@ public class AirportWeatherService {
      *
      * @param iataCode as a string
      * @return airport data or null if not found
+     *
+     * @throws NoSuchElementException if there is no airport for the given iataCode
      */
     public AirportData findAirportDataFor(String iataCode) throws NoSuchElementException {
         return airportRepository.getAirports().stream()
@@ -96,17 +98,17 @@ public class AirportWeatherService {
      * @param longitude in degrees
      * @return the added airport
      */
-    public void addAirport(String iataCode, double latitude, double longitude) throws IllegalArgumentException {
+    public void addAirport(String iataCode, double latitude, double longitude) {
         airportRepository.addAirport(iataCode, latitude, longitude);
     }
 
     /**
      * Remove an airport
      *
-     * @param iata 3 letter code
+     * @param iataCode 3 letter code
      */
-    public void removeAirport(String iata) {
-        AirportData airport = findAirportDataFor(iata);
+    public void removeAirport(String iataCode) {
+        AirportData airport = findAirportDataFor(iataCode);
         airportRepository.removeAirport(airport);
     }
 }
