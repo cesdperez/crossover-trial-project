@@ -4,10 +4,13 @@ import com.crossover.trial.weather.exception.WeatherException;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.service.AirportWeatherService;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.util.logging.Logger;
+
+import static javax.ws.rs.core.Response.Status.*;
 
 /**
  * A REST implementation of the WeatherCollector API. Accessible only to airport weather collection
@@ -18,7 +21,7 @@ import java.util.logging.Logger;
 
 @Path("/collect")
 public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
-    public final static Logger LOGGER = Logger.getLogger(RestWeatherCollectorEndpoint.class.getName());
+    public final static Logger LOG = LoggerFactory.getLogger(RestWeatherCollectorEndpoint.class);
 
     /**
      * shared gson json to object factory
@@ -30,7 +33,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     @Override
     public Response ping() {
         return Response
-                .status(Response.Status.OK)
+                .status(OK)
                 .entity("ready")
                 .build();
     }
@@ -39,19 +42,19 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     public Response updateWeather(String iataCode, String pointType, String datapointJson) {
         try {
             airportWeatherService.addDataPoint(iataCode, pointType, gson.fromJson(datapointJson, DataPoint.class));
+            LOG.debug("Data point ({} {} {}) added", iataCode, pointType, datapointJson);
+            return Response.status(OK).build();
         } catch (WeatherException e) {
-            e.printStackTrace();
+            LOG.error("Data point ({} {} {}) can't be added", iataCode, pointType, datapointJson);
+            return Response.status(BAD_REQUEST).build();
         }
-        return Response
-                .status(Response.Status.OK)
-                .build();
     }
 
 
     @Override
     public Response getAirports() {
         return Response
-                .status(Response.Status.OK)
+                .status(OK)
                 .entity(airportWeatherService.getAirportsIatas())
                 .build();
     }
@@ -60,7 +63,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     @Override
     public Response getAirport(String iata) {
         return Response
-                .status(Response.Status.OK)
+                .status(OK)
                 .entity(airportWeatherService.findAirportDataFor(iata))
                 .build();
     }
@@ -68,18 +71,27 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
 
     @Override
     public Response addAirport(String iata, String latString, String longString) {
-        airportWeatherService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
-        return Response
-                .status(Response.Status.OK)
-                .build();
+        try {
+            airportWeatherService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
+            LOG.debug("Airport (%s, %s, %s) added", iata, latString, longString);
+            return Response.status(CREATED).build();
+        } catch (NumberFormatException e) {
+            LOG.error("Airport (%s, %s, %s) can't be added", iata, latString, longString, e);
+            return Response.status(BAD_REQUEST).build();
+        } catch (IllegalArgumentException e) {
+            LOG.debug("Airport (%s, %s, %s) wasn't added, already exists", iata, latString, longString);
+            return Response.status(NOT_MODIFIED).build();
+        }
     }
 
 
     @Override
     public Response deleteAirport(String iata) {
-        return Response
-                .status(Response.Status.NOT_IMPLEMENTED)
-                .build();
+        LOG.debug("deleteAirport ({})", iata);
+
+        airportWeatherService.removeAirport(iata);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @Override

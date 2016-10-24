@@ -58,11 +58,13 @@ public class InMemoryAirportWeatherRepository {
         return airportMap.get(airport);
     }
 
-    public void addAirport(AirportData ad, AtmosphericInformation ai) {
-        airportMap.put(ad, ai);
+    public void addAirport(AirportData ad, AtmosphericInformation ai) throws IllegalArgumentException {
+        AtmosphericInformation atmosphericInformation = airportMap.putIfAbsent(ad, ai);
+        if (null != atmosphericInformation)
+            throw new IllegalArgumentException();
     }
 
-    public AirportData addAirport(String iataCode, double latitude, double longitude) {
+    public void addAirport(String iataCode, double latitude, double longitude) throws IllegalArgumentException {
         AirportData ad = new AirportData.Builder()
                 .withIata(iataCode)
                 .withLatitude(latitude)
@@ -72,12 +74,16 @@ public class InMemoryAirportWeatherRepository {
         AtmosphericInformation ai = new AtmosphericInformation();
 
         addAirport(ad, ai);
-        return ad;
+    }
+
+    public void removeAirport(AirportData airport) {
+        airportMap.remove(airport);
     }
 
     /**
      * A dummy init method that loads hard coded data
      */
+
     public void init() {
         addAirport("BOS", 42.364347, -71.005181);
         addAirport("EWR", 40.6925, -74.168667);

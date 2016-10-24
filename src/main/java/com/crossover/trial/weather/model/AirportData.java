@@ -141,21 +141,12 @@ public class AirportData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AirportData that = (AirportData) o;
-        return Double.compare(that.latitude, latitude) == 0 &&
-                Double.compare(that.longitude, longitude) == 0 &&
-                altitude == that.altitude &&
-                Double.compare(that.timezone, timezone) == 0 &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(city, that.city) &&
-                Objects.equals(country, that.country) &&
-                Objects.equals(iata, that.iata) &&
-                Objects.equals(icao, that.icao) &&
-                zone == that.zone;
+        return Objects.equals(iata, that.iata);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, city, country, iata, icao, latitude, longitude, altitude, timezone, zone);
+        return Objects.hash(iata);
     }
 
     /**

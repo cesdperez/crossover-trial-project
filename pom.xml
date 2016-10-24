@@ -9,10 +9,12 @@
     <version>1.2.0</version>
 
     <properties>
+        <slf4j-api.version>1.7.21</slf4j-api.version>
         <jersey.version>2.22</jersey.version>
         <javax.ws.rs-api.version>2.0.1</javax.ws.rs-api.version>
         <gson.version>2.4</gson.version>
         <commons-lang3.version>3.4</commons-lang3.version>
+        <version.opencsv>3.8</version.opencsv>
         <junit.version>4.12</junit.version>
         <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
@@ -32,6 +34,20 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-api.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
@@ -87,10 +103,22 @@
         </dependency>
 
         <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${version.opencsv}</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
             <version>${junit.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
         </dependency>
 
     </dependencies>

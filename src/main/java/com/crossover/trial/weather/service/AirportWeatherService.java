@@ -96,7 +96,17 @@ public class AirportWeatherService {
      * @param longitude in degrees
      * @return the added airport
      */
-    public AirportData addAirport(String iataCode, double latitude, double longitude) {
-        return airportRepository.addAirport(iataCode, latitude, longitude);
+    public void addAirport(String iataCode, double latitude, double longitude) throws IllegalArgumentException {
+        airportRepository.addAirport(iataCode, latitude, longitude);
+    }
+
+    /**
+     * Remove an airport
+     *
+     * @param iata 3 letter code
+     */
+    public void removeAirport(String iata) {
+        AirportData airport = findAirportDataFor(iata);
+        airportRepository.removeAirport(airport);
     }
 }
