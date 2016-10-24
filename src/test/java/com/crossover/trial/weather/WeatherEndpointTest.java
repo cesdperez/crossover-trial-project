@@ -2,6 +2,8 @@ package com.crossover.trial.weather;
 
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.model.DataPoint;
+import com.crossover.trial.weather.repository.InMemoryAirportWeatherRepository;
+import com.crossover.trial.weather.repository.InMemoryStatisticsRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -24,7 +26,9 @@ public class WeatherEndpointTest {
 
     @Before
     public void setUp() throws Exception {
-        RestWeatherQueryEndpoint.init();
+        InMemoryStatisticsRepository.getInstance().clear();
+        InMemoryAirportWeatherRepository.getInstance().clear();
+
         dataPoint = new DataPoint.Builder()
                 .withCount(10)
                 .withFirst(10)
@@ -67,7 +71,13 @@ public class WeatherEndpointTest {
     public void testUpdate() throws Exception {
 
         DataPoint windDp = new DataPoint.Builder()
-                .withCount(10).withFirst(10).withSecond(20).withThird(30).withMean(22).build();
+                .withCount(10)
+                .withFirst(10)
+                .withSecond(20)
+                .withThird(30)
+                .withMean(22)
+                .build();
+
         update.updateWeather("BOS", "wind", gson.toJson(windDp));
         query.weather("BOS", "0").getEntity();
 

@@ -63,8 +63,13 @@ public class AtmosphericInformation {
     }
 
     @JsonIgnore
-    public boolean isEmpty() {
-        return data.isEmpty();
+    public boolean isNotEmpty() {
+        return !data.isEmpty();
+    }
+
+    @JsonIgnore
+    public boolean wasUpdatedToday() {
+        return getLastUpdateTime() > System.currentTimeMillis() - 86400000;
     }
 
 }

@@ -39,9 +39,14 @@ public class AirportData {
     private String icao;
 
     /**
-     * latitud and longitude
+     * airport location latitude
      */
-    private Coordinate coordinate;
+    private double latitude;
+
+    /**
+     * airport location longitude
+     */
+    private double longitude;
 
     /**
      * altitude value in feets
@@ -68,7 +73,8 @@ public class AirportData {
         country = builder.country;
         iata = builder.iata;
         icao = builder.icao;
-        coordinate = new Coordinate(builder.latitude, builder.longitude);
+        latitude = builder.latitude;
+        longitude = builder.longitude;
         altitude = builder.altitude;
         timezone = builder.timezone;
         zone = builder.zone;
@@ -83,11 +89,11 @@ public class AirportData {
     }
 
     public double getLatitude() {
-        return coordinate.getLatitude();
+        return this.latitude;
     }
 
     public double getLongitude() {
-        return coordinate.getLongitude();
+        return this.longitude;
     }
 
     public String getCity() {
@@ -122,7 +128,8 @@ public class AirportData {
                 .append("country", country)
                 .append("iata", iata)
                 .append("icao", icao)
-                .append("coordinate", coordinate)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
                 .append("altitude", altitude)
                 .append("timezone", timezone)
                 .append("zone", zone)
@@ -134,20 +141,21 @@ public class AirportData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AirportData that = (AirportData) o;
-        return altitude == that.altitude &&
+        return Double.compare(that.latitude, latitude) == 0 &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                altitude == that.altitude &&
                 Double.compare(that.timezone, timezone) == 0 &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(city, that.city) &&
                 Objects.equals(country, that.country) &&
                 Objects.equals(iata, that.iata) &&
                 Objects.equals(icao, that.icao) &&
-                Objects.equals(coordinate, that.coordinate) &&
                 zone == that.zone;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, city, country, iata, icao, coordinate, altitude, timezone, zone);
+        return Objects.hash(name, city, country, iata, icao, latitude, longitude, altitude, timezone, zone);
     }
 
     /**
