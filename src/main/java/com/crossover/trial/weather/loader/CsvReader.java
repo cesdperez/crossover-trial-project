@@ -13,24 +13,32 @@ import static java.util.stream.Collectors.toList;
 /**
  * A simple CSV Reader
  */
-final class CsvReader {
+class CsvReader {
 
     private static final int IATA = 4;
     private static final int LATITUDE = 6;
     private static final int LONGITUDE = 7;
 
-    private final List<AirportLine> airportLines;
+    private final List<CsvFileLine> airportLines;
 
     CsvReader(InputStream csvStream) throws IOException {
         try (CSVReader strings = new CSVReader(new InputStreamReader(csvStream))) {
             airportLines = strings.readAll()
                     .stream()
-                    .map(row -> new AirportLine(row[IATA], row[LONGITUDE], row[LATITUDE]))
+                    .map(row -> getAirportLine(row))
                     .collect(toList());
         }
     }
 
-    List<AirportLine> getAirportLines() {
+    private CsvFileLine getAirportLine(String[] row) {
+        try {
+            return new CsvFileLine(row[IATA], row[LONGITUDE], row[LATITUDE]);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    List<CsvFileLine> getAirportLines() {
         return new ArrayList<>(airportLines);
     }
 
