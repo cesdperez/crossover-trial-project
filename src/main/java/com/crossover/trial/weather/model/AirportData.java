@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-import static com.crossover.trial.weather.util.WeatherValidator.*;
+import static com.crossover.trial.weather.exception.WeatherValidator.*;
 
 /**
  * Basic airport information.

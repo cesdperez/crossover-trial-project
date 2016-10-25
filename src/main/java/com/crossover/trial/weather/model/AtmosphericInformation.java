@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.crossover.trial.weather.exception.WeatherValidator.checkDataPoint;
 import static com.crossover.trial.weather.model.DataPointType.*;
-import static com.crossover.trial.weather.util.WeatherValidator.checkDataPoint;
 
 /**
  * encapsulates sensor information for a particular location

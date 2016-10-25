@@ -1,4 +1,4 @@
-package com.crossover.trial.weather.util;
+package com.crossover.trial.weather.exception;
 
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.model.DataPointType;
