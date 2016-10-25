@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class RestWeatherQueryEndpointTest {
+public class WeatherEndpointsIntegrationTest {
 
     private WeatherQueryEndpoint query;
 

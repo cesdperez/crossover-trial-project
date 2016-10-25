@@ -1,7 +1,6 @@
 package com.crossover.trial.weather.endpoint;
 
 import com.crossover.trial.weather.exception.AirportAlreadyExistsException;
-import com.crossover.trial.weather.exception.WeatherException;
 import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.service.AirportWeatherService;
@@ -24,12 +23,12 @@ import static javax.ws.rs.core.Response.Status.*;
 
 @Path("/collect")
 public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
-    public final static Logger LOG = LoggerFactory.getLogger(RestWeatherCollectorEndpoint.class);
+    private final static Logger LOG = LoggerFactory.getLogger(RestWeatherCollectorEndpoint.class);
 
     /**
      * shared gson json to object factory
      */
-    public final static Gson gson = new Gson();
+    private final static Gson gson = new Gson();
 
     private AirportWeatherService airportWeatherService = new AirportWeatherService();
 
@@ -44,12 +43,16 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     @Override
     public Response updateWeather(String iataCode, String pointType, String datapointJson) {
         try {
-            airportWeatherService.addDataPoint(iataCode, pointType, gson.fromJson(datapointJson, DataPoint.class));
+            DataPoint dataPoint = gson.fromJson(datapointJson, DataPoint.class);
+            airportWeatherService.addDataPoint(iataCode, pointType, dataPoint);
             LOG.debug("Data point ({} {} {}) added", iataCode, pointType, datapointJson);
             return Response.status(OK).build();
-        } catch (WeatherException e) {
-            LOG.error("Data point ({} {} {}) can't be added", iataCode, pointType, datapointJson);
+        } catch (IllegalArgumentException e) {
+            LOG.debug("Data point ({} {} {}) can't be added", iataCode, pointType, datapointJson, e);
             return Response.status(BAD_REQUEST).build();
+        } catch (NoSuchElementException e) {
+            LOG.debug("Airport ({}) doesn't exist. Data point won't be added.", iataCode);
+            return Response.status(NOT_FOUND).build();
         }
     }
 
@@ -68,15 +71,13 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         try {
             AirportData airport = airportWeatherService.findAirportDataFor(iata);
             LOG.debug("Data for airport ({}) retrieved", iata);
-            return Response
-                    .status(OK)
+            return Response.status(OK)
                     .entity(airport)
                     .build();
+
         } catch (NoSuchElementException e) {
             LOG.debug("Airport ({}) can't be retrieved because it doesn't exist");
-            return Response
-                    .status(NOT_FOUND)
-                    .build();
+            return Response.status(NOT_FOUND).build();
         }
     }
 

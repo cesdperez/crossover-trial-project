@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Represents a line of a CSV file that is read by the {@link CsvReader}
  */
-final class CsvFileLine {
+class CsvFileLine {
 
     final String iataCode;
     final String longitude;

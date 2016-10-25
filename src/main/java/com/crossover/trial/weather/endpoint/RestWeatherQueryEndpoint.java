@@ -4,13 +4,17 @@ import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.service.AirportWeatherService;
 import com.crossover.trial.weather.service.StatisticsService;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.NoSuchElementException;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * The Weather App REST endpoint allows clients to query, update and check health stats. Currently, all data is
@@ -21,7 +25,7 @@ import java.util.logging.Logger;
 @Path("/query")
 public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 
-    public final static Logger LOGGER = Logger.getLogger("WeatherQuery");
+    private final static Logger LOG = LoggerFactory.getLogger(RestWeatherQueryEndpoint.class);
 
     /**
      * shared gson json to object factory
@@ -31,11 +35,6 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
     private StatisticsService statisticsService = new StatisticsService();
     private AirportWeatherService airportWeatherService = new AirportWeatherService();
 
-    /**
-     * Retrieve service health including total size of valid data points and request frequency information.
-     *
-     * @return health stats for the service as a string
-     */
     @Override
     public String ping() {
         Map<String, Object> retval = new HashMap<>();
@@ -47,23 +46,21 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
         return gson.toJson(retval);
     }
 
-    /**
-     * Given a query in json format {'iata': CODE, 'radius': km} extracts the requested airport information and
-     * return a list of matching atmosphere information.
-     *
-     * @param iata         the iataCode
-     * @param radiusString the radius in km
-     * @return a list of atmospheric information
-     */
     @Override
     public Response weather(String iata, String radiusString) {
-        double radius = radiusString == null ? 0 : Double.valueOf(radiusString);
-        statisticsService.updateRequestFrequency(iata, radius);
-        List<AtmosphericInformation> retval = airportWeatherService.findAtmosphericInformationInRange(iata, radius);
+        try {
+            double radius = radiusString == null ? 0 : Double.valueOf(radiusString);
+            statisticsService.updateRequestFrequency(iata, radius);
+            List<AtmosphericInformation> retval = airportWeatherService.findAtmosphericInformationInRange(iata, radius);
+            LOG.debug("Atmospheric information for iata {} in a radius {} retrieved", iata, radius);
 
-        return Response
-                .status(Response.Status.OK)
-                .entity(retval)
-                .build();
+            return Response.status(Response.Status.OK)
+                    .entity(retval)
+                    .build();
+
+        } catch (NoSuchElementException e) {
+            LOG.debug("Atmospheric information couldn't be found. Airport ({}) doesn't exist doesn't exist.", iata);
+            return Response.status(NOT_FOUND).build();
+        }
     }
 }

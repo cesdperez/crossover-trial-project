@@ -1,7 +1,9 @@
 package com.crossover.trial.weather.endpoint;
 
+import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.repository.InMemoryAirportWeatherRepository;
 import com.crossover.trial.weather.repository.InMemoryStatisticsRepository;
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,11 +17,14 @@ public class WeatherCollectorEndpointFailureTest {
 
     private WeatherCollectorEndpoint collect;
 
+    private Gson gson;
+
     @Before
     public void setup() {
         InMemoryStatisticsRepository.getInstance().clear();
         InMemoryAirportWeatherRepository.getInstance().clear();
         collect = new RestWeatherCollectorEndpoint();
+        gson = new Gson();
     }
 
     @Test
@@ -53,5 +58,32 @@ public class WeatherCollectorEndpointFailureTest {
     public void getNonexistentAirportTest() {
         Response response = collect.getAirport("ZZZ");
         assertThat(fromStatusCode(response.getStatus()), is(NOT_FOUND));
+    }
+
+    @Test
+    public void weatherUnexistentAirportTest() {
+        Response response = collect.updateWeather("ZZZ", "wind", null);
+        assertThat(fromStatusCode(response.getStatus()), is(NOT_FOUND));
+    }
+
+    @Test
+    public void weatherBadRequestTest() {
+        collect.addAirport("ZZZ", "1", "2");
+
+        DataPoint windDp = buildADataPoint();
+        String datapointJson = gson.toJson(windDp);
+
+        Response response = collect.updateWeather("ZZZ", "temperature", datapointJson);
+        assertThat(fromStatusCode(response.getStatus()), is(BAD_REQUEST));
+    }
+
+    private DataPoint buildADataPoint() {
+        return new DataPoint.Builder()
+                .withCount(10)
+                .withFirst(10)
+                .withSecond(20)
+                .withThird(30)
+                .withMean(1000)
+                .build();
     }
 }
