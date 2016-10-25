@@ -71,7 +71,7 @@ public class AirportLoader {
     }
 
     public void upload() {
-        List<CsvFileLine> airportLines = csvReader.getAirportLines();
+        List<CsvFileLine> airportLines = csvReader.getLines();
         for (int i = 0; i < airportLines.size(); i++) {
             CsvFileLine line = airportLines.get(i);
 

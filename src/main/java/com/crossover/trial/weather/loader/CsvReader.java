@@ -19,18 +19,18 @@ class CsvReader {
     private static final int LATITUDE = 6;
     private static final int LONGITUDE = 7;
 
-    private final List<CsvFileLine> airportLines;
+    private final List<CsvFileLine> lines;
 
     CsvReader(InputStream csvStream) throws IOException {
         try (CSVReader strings = new CSVReader(new InputStreamReader(csvStream))) {
-            airportLines = strings.readAll()
+            lines = strings.readAll()
                     .stream()
-                    .map(row -> getAirportLine(row))
+                    .map(row -> getLine(row))
                     .collect(toList());
         }
     }
 
-    private CsvFileLine getAirportLine(String[] row) {
+    private CsvFileLine getLine(String[] row) {
         try {
             return new CsvFileLine(row[IATA], row[LONGITUDE], row[LATITUDE]);
         } catch (Exception e) {
@@ -38,8 +38,8 @@ class CsvReader {
         }
     }
 
-    List<CsvFileLine> getAirportLines() {
-        return new ArrayList<>(airportLines);
+    List<CsvFileLine> getLines() {
+        return new ArrayList<>(lines);
     }
 
 }
