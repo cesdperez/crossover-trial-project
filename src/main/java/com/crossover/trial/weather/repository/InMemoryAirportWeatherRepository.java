@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * In-memory repository for Airport Weather Service APP that uses concurrent collections.
+ * In-memory repository for Airport Weather Domain data that supports concurrency.
  */
 public class InMemoryAirportWeatherRepository {
     /**
@@ -19,9 +19,6 @@ public class InMemoryAirportWeatherRepository {
 
     /**
      * airports and their atmospheric information, key corresponds with airportData
-     * <p>
-     * Since one airport can only have one AtmospherinInformation object
-     * It is OK to combine them in a map.
      */
     private final Map<AirportData, AtmosphericInformation> airportMap;
 

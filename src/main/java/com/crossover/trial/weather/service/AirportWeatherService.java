@@ -12,6 +12,9 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * Service for accessing the main operations in the Airport Weather Domain.
+ */
 public class AirportWeatherService {
 
     private InMemoryAirportWeatherRepository airportRepository = InMemoryAirportWeatherRepository.getInstance();

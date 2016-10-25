@@ -1,7 +1,7 @@
 package com.crossover.trial.weather.model;
 
 /**
- * The various types of data points we can collect.
+ * The various types of data points we can collect with their minimum and maximum mean values.
  *
  * @author code test administrator
  */

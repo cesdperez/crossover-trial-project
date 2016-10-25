@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Service for retrieving Airport Weather Domain statistics.
+ */
 public class StatisticsService {
 
     public static final double RADIUS_HISTOGRAM_MAXSIZE = 1000.0;

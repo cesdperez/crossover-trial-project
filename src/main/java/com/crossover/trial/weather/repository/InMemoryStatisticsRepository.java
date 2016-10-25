@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * In-memory repository for Airport Weather Domain statistics that supports concurrency.
+ */
 public class InMemoryStatisticsRepository {
 
     /**
